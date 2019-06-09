@@ -378,8 +378,8 @@ static void mk_process_packet(struct mk *mk) {
             mk_input_report(pad, data);
         } else
         if (pad->type == MK_ARCADE_GPIO_MULTIPLEXER) {
-            mk_multiplexer_read_packet(pad, data);
-            mk_input_report(pad, data);
+            //mk_multiplexer_read_packet(pad, data);
+            //mk_input_report(pad, data);
         }
     }
 
@@ -453,6 +453,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     }
 
     if (pad_type == MK_ARCADE_GPIO_MULTIPLEXER) {
+        /*
 
         // if the device is custom, be sure to get correct pins
         if (gpio_cfg.nargs < 1) {
@@ -463,6 +464,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
              return -EINVAL;
         }
     
+        */
     }
 
     pr_err("pad type : %d\n",pad_type);
@@ -523,7 +525,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             // nothing to asign if MCP23017 is used
             break;
         case MK_ARCADE_GPIO_MULTIPLEXER:
-            memcpy(pad->gpio_maps, gpio_cfg.mk_arcade_gpio_maps_custom, 5 *sizeof(int));
+            //memcpy(pad->gpio_maps, gpio_cfg.mk_arcade_gpio_maps_custom, 5 *sizeof(int));
             break;
     }
 
@@ -548,6 +550,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         i2c_write(pad->mcp23017addr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
         udelay(1000);
     } else if(pad_type == MK_ARCADE_GPIO_MULTIPLEXER){
+        /*
         for (i = 0; i < mk_max_arcade_buttons; i++) {
             printk("GPIO = %d\n", pad->gpio_maps[i]);
         }
@@ -558,6 +561,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         setGpioAsInput(pad->gpio_maps[4]);
         setGpioPullUps(1 << pad->gpio_maps[4]);
         printk("GPIO configured for pad%d\n", idx);
+        */
     } else {
         for (i = 0; i < mk_max_arcade_buttons; i++) {
             printk("GPIO = %d\n", pad->gpio_maps[i]);
