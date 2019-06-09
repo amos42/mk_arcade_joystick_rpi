@@ -374,7 +374,7 @@ static void mk_process_packet(struct mk *mk) {
             mk_input_report(pad, data);
         } else
         if (pad->type == MK_ARCADE_GPIO_MULTIPLEXER) {
-            mk_gpio_read_packet(pad, data);
+            mk_multiplexer_read_packet(pad, data);
             mk_input_report(pad, data);
         }
     }
