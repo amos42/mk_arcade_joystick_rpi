@@ -329,10 +329,10 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
 
     for (i = 0; i < mk_max_arcade_buttons; i++) {
         int addr = i + 1;
-        GPIO_WRITE(pad->gpio_maps[0], addr & 1);
-        GPIO_WRITE(pad->gpio_maps[1], (addr >> 1) & 1);
-        GPIO_WRITE(pad->gpio_maps[2], (addr >> 2) & 1);
-        GPIO_WRITE(pad->gpio_maps[3], (addr >> 3) & 1);
+        OUT_GPIO(pad->gpio_maps[0], addr & 1);
+        OUT_GPIO(pad->gpio_maps[1], (addr >> 1) & 1);
+        OUT_GPIO(pad->gpio_maps[2], (addr >> 2) & 1);
+        OUT_GPIO(pad->gpio_maps[3], (addr >> 3) & 1);
         int read = GPIO_READ(pad->gpio_maps[4]);
         if (read == 0) data[i] = 1;
         else data[i] = 0;
