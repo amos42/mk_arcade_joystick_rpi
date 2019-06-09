@@ -233,6 +233,13 @@ static int getPullUpMask(int gpioMap[]){
     return mask;
 }
 
+static void putGpioValue(int gpio, int onoff) {
+    if (onoff) 
+        GPIO_SET = (1 << gpio); 
+    else 
+        GPIO_CLR = (1 << gpio);
+}
+
 /* I2C UTILS */
 static void i2c_init(void) {
     INP_GPIO(2);
@@ -333,13 +340,12 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
 
     for (i = 0; i < mk_max_arcade_buttons; i++) {
         int addr = i + 1;
-        if(addr & 1) GPIO_SET = 1 << pad->gpio_maps[0]; else GPIO_CLR = 1 << pad->gpio_maps[0];
-        if((addr >> 1) & 1) GPIO_SET = 1 << pad->gpio_maps[1]; else GPIO_CLR = 1 << pad->gpio_maps[1];
-        if((addr >> 2) & 1) GPIO_SET = 1 << pad->gpio_maps[2]; else GPIO_CLR = 1 << pad->gpio_maps[2];
-        if((addr >> 3) & 1) GPIO_SET = 1 << pad->gpio_maps[3]; else GPIO_CLR = 1 << pad->gpio_maps[3];
+        putGpioValue(pad->gpio_maps[0], addr & 1);
+        putGpioValue(pad->gpio_maps[1], (addr >> 1) & 1);
+        putGpioValue(pad->gpio_maps[2], (addr >> 2) & 1);
+        putGpioValue(pad->gpio_maps[3], (addr >> 3) & 1);
         int read = GPIO_READ(pad->gpio_maps[4]);
-        if (read == 0) data[i] = 1;
-        else data[i] = 0;
+        data[i] = (read == 0)? 1 : 0;
     }
 }
 
@@ -372,12 +378,10 @@ static void mk_process_packet(struct mk *mk) {
         if (pad->type == MK_ARCADE_GPIO || pad->type == MK_ARCADE_GPIO_BPLUS || pad->type == MK_ARCADE_GPIO_TFT || pad->type == MK_ARCADE_GPIO_CUSTOM) {
             mk_gpio_read_packet(pad, data);
             mk_input_report(pad, data);
-        } else
-        if (pad->type == MK_ARCADE_MCP23017) {
+        } else if (pad->type == MK_ARCADE_MCP23017) {
             mk_mcp23017_read_packet(pad, data);
             mk_input_report(pad, data);
-        } else
-        if (pad->type == MK_ARCADE_GPIO_MULTIPLEXER) {
+        } else if (pad->type == MK_ARCADE_GPIO_MULTIPLEXER) {
             mk_multiplexer_read_packet(pad, data);
             mk_input_report(pad, data);
         }
@@ -451,7 +455,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     }
 
     if (pad_type == MK_ARCADE_GPIO_MULTIPLEXER) {
-        // if the device is custom, be sure to get correct pins
+        // if the device is multiplexer, be sure to get correct pins
         if (gpio_cfg.nargs < 1) {
             pr_err("Multiplexer device needs gpio argument\n");
             return -EINVAL;
