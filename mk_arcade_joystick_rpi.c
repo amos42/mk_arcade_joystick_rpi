@@ -548,7 +548,9 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         i2c_write(pad->mcp23017addr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
         udelay(1000);
     } else if(pad_type == MK_ARCADE_GPIO_MULTIPLEXER){
-        printk("GPIO = %d\n", pad->gpio_maps[i]);
+        for (i = 0; i < mk_max_arcade_buttons; i++) {
+            printk("GPIO = %d\n", pad->gpio_maps[i]);
+        }
         setGpioAsOutput(pad->gpio_maps[0]);
         setGpioAsOutput(pad->gpio_maps[1]);
         setGpioAsOutput(pad->gpio_maps[2]);
