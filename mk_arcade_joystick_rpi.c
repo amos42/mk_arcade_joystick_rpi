@@ -217,6 +217,10 @@ static void setGpioAsInput(int gpioNum) {
     INP_GPIO(gpioNum);
 }
 
+static void setGpioAsOutput(int gpioNum) {
+    OUT_GPIO(gpioNum);
+}
+
 static int getPullUpMask(int gpioMap[]){
     int mask = 0x0000000;
     int i;
@@ -543,7 +547,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         // Known bug : if you remove this line, you will not have pullups on GPIOB 
         i2c_write(pad->mcp23017addr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
         udelay(1000);
-    } else if(pad_type == MK_ARCADE_MULTIPLEXER){
+    } else if(pad_type == MK_ARCADE_GPIO_MULTIPLEXER){
         printk("GPIO = %d\n", pad->gpio_maps[i]);
         setGpioAsOutput(pad->gpio_maps[0]);
         setGpioAsOutput(pad->gpio_maps[1]);
