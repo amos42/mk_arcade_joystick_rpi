@@ -554,7 +554,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         setGpioAsOutput(pad->gpio_maps[2]);
         setGpioAsOutput(pad->gpio_maps[3]);
         setGpioAsInput(pad->gpio_maps[4]);
-        setGpioPullUps(getPullUpMask(&pad->gpio_maps[4]), 1));
+        setGpioPullUps(getPullUpMask(&pad->gpio_maps[4], 1));
         printk("GPIO configured for pad%d\n", idx);
     } else {
         for (i = 0; i < mk_max_arcade_buttons; i++) {
