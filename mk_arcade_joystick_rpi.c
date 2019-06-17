@@ -233,11 +233,12 @@ static int getPullUpMask(int gpioMap[]){
     return mask;
 }
 
-static void putGpioValue(int gpio, int onoff) {
-    if (onoff) 
-        GPIO_SET = (unsigned char)(1 << gpio); 
-    else 
-        GPIO_CLR = (unsigned char)(1 << gpio);
+static void putGpioValue(int gpiono, int onoff) {
+    if (onoff) {
+        GPIO_SET = (char)(1 << gpiono); 
+    } else {
+        GPIO_CLR = (char)(1 << gpiono);
+    }
 }
 
 /* I2C UTILS */
