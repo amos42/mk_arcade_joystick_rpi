@@ -336,17 +336,21 @@ static void mk_gpio_read_packet(struct mk_pad * pad, unsigned char *data) {
 }
 
 static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data) {
-    int i;
+    int i, value;
+    int addr0 = pad->gpio_maps[0];
+    int addr1 = pad->gpio_maps[1];
+    int addr2 = pad->gpio_maps[2];
+    int addr3 = pad->gpio_maps[3];
+    int readp = pad->gpio_maps[4];
 
     for (i = 0; i < mk_max_arcade_buttons; i++) {
-        int read;
-        int addr = i + 1;
-        putGpioValue(pad->gpio_maps[0], addr & 1);
-        putGpioValue(pad->gpio_maps[1], (addr >> 1) & 1);
-        putGpioValue(pad->gpio_maps[2], (addr >> 2) & 1);
-        putGpioValue(pad->gpio_maps[3], (addr >> 3) & 1);
-        read = GPIO_READ(pad->gpio_maps[4]);
-        data[i] = (read == 0)? 1 : 0;
+        int addr = i;
+        putGpioValue(addr0, addr & 1);
+        putGpioValue(addr1, (addr >> 1) & 1);
+        putGpioValue(addr2, (addr >> 2) & 1);
+        putGpioValue(addr3, (addr >> 3) & 1);
+        value = GPIO_READ(readp);
+        data[i] = (value == 0)? 1 : 0;
     }
 }
 
