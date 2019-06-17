@@ -234,11 +234,10 @@ static int getPullUpMask(int gpioMap[]){
 }
 
 static void putGpioValue(int gpiono, int onoff) {
-    if (onoff) {
-        GPIO_SET = (char)(1 << gpiono); 
-    } else {
-        GPIO_CLR = (char)(1 << gpiono);
-    }
+    if (onoff) 
+        GPIO_SET = (1 << gpiono); 
+    else
+        GPIO_CLR = (1 << gpiono);
 }
 
 /* I2C UTILS */
@@ -549,8 +548,8 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         i2c_write(pad->mcp23017addr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
         udelay(1000);
     } else if(pad_type == MK_ARCADE_GPIO_MULTIPLEXER){
-        for (i = 0; i < mk_max_arcade_buttons; i++) {
-            //printk("GPIO = %d\n", pad->gpio_maps[i]);
+        for (i = 0; i < 5; i++) {
+            printk("GPIO = %d\n", pad->gpio_maps[i]);
         }
         setGpioAsOutput(pad->gpio_maps[0]);
         setGpioAsOutput(pad->gpio_maps[1]);
