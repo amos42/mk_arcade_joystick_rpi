@@ -56,6 +56,7 @@ MODULE_LICENSE("GPL");
 #define OUT_GPIO(g) *(gpio+((g)/10)) |=  (1<<(((g)%10)*3))
 #define GPIO_READ(g)  *(gpio + 13) &= (1<<(g))
 
+#define GET_GPIO(g) (*(gpio+13) & (1<<g))
 #define SET_GPIO_ALT(g,a) *(gpio+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
 
 #define GPIO_SET *(gpio+7)
@@ -350,7 +351,7 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
         putGpioValue(addr2, (addr >> 2) & 1);
         putGpioValue(addr3, (addr >> 3) & 1);
         udelay(1);
-        value = GPIO_READ(readp);
+        value = GET_GPIO(readp);
         data[i] = (value == 0)? 1 : 0;
     }
 }
