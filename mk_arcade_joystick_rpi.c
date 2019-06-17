@@ -550,7 +550,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         udelay(1000);
     } else if(pad_type == MK_ARCADE_GPIO_MULTIPLEXER){
         for (i = 0; i < mk_max_arcade_buttons; i++) {
-            printk("GPIO = %d\n", pad->gpio_maps[i]);
+            //printk("GPIO = %d\n", pad->gpio_maps[i]);
         }
         setGpioAsOutput(pad->gpio_maps[0]);
         setGpioAsOutput(pad->gpio_maps[1]);
