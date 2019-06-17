@@ -200,7 +200,7 @@ static const short mk_arcade_gpio_btn[] = {
 };
 
 static const char *mk_names[] = {
-    NULL, "GPIO Controller 1", "GPIO Controller 2", "MCP23017 Controller", "GPIO Controller 1" , "GPIO Controller 1"
+    NULL, "GPIO Controller 1", "GPIO Controller 2", "MCP23017 Controller", "GPIO Controller 1" , "GPIO Controller 1", "Multiplexer Controller"
 };
 
 /* GPIO UTILS */
@@ -221,10 +221,10 @@ static void setGpioAsOutput(int gpioNum) {
     OUT_GPIO(gpioNum);
 }
 
-static int getPullUpMask(int gpioMap[]){
+static int getPullUpMask(int gpioMap[], int count){
     int mask = 0x0000000;
     int i;
-    for(i=0; i<12;i++) {
+    for(i = 0; i < count; i++) {
         if(gpioMap[i] != -1){   // to avoid unused pins
             int pin_mask  = 1<<gpioMap[i];
             mask = mask | pin_mask;
@@ -452,9 +452,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
              pr_err("Invalid gpio argument\n", pad_type);
              return -EINVAL;
         }
-    }
-
-    if (pad_type == MK_ARCADE_GPIO_MULTIPLEXER) {
+    } else if (pad_type == MK_ARCADE_GPIO_MULTIPLEXER) {
         // if the device is multiplexer, be sure to get correct pins
         if (gpio_cfg.nargs < 1) {
             pr_err("Multiplexer device needs gpio argument\n");
@@ -547,7 +545,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         // Known bug : if you remove this line, you will not have pullups on GPIOB 
         i2c_write(pad->mcp23017addr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
         udelay(1000);
-    } else if(pad_type == MK_ARCADE_GPIO_MULTIPLEXER){
+    } else if(pad_type == MK_ARCADE_GPIO_MULTIPLEXER) {
         for (i = 0; i < 5; i++) {
             printk("GPIO = %d\n", pad->gpio_maps[i]);
         }
@@ -556,7 +554,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         setGpioAsOutput(pad->gpio_maps[2]);
         setGpioAsOutput(pad->gpio_maps[3]);
         setGpioAsInput(pad->gpio_maps[4]);
-        setGpioPullUps(1 << pad->gpio_maps[4]);
+        setGpioPullUps(getPullUpMask(&pad->gpio_maps[4]), 1));
         printk("GPIO configured for pad%d\n", idx);
     } else {
         for (i = 0; i < mk_max_arcade_buttons; i++) {
@@ -565,7 +563,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
                  setGpioAsInput(pad->gpio_maps[i]);
             }                
         }
-        setGpioPullUps(getPullUpMask(pad->gpio_maps));
+        setGpioPullUps(getPullUpMask(pad->gpio_maps), 12);
         printk("GPIO configured for pad%d\n", idx);
 	}
 
