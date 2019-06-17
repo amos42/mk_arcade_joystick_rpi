@@ -278,10 +278,10 @@ static void i2c_write(char dev_addr, char reg_addr, char *buf, unsigned short le
 // Function to read a number of bytes into a  buffer from the FIFO of the I2C controller
 
 static void i2c_read(char dev_addr, char reg_addr, char *buf, unsigned short len) {
+    unsigned short bufidx;
 
     i2c_write(dev_addr, reg_addr, NULL, 0);
 
-    unsigned short bufidx;
     bufidx = 0;
 
     memset(buf, 0, len); // clear the buffer
@@ -339,12 +339,13 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
     int i;
 
     for (i = 0; i < mk_max_arcade_buttons; i++) {
+        int read;
         int addr = i + 1;
         putGpioValue(pad->gpio_maps[0], addr & 1);
         putGpioValue(pad->gpio_maps[1], (addr >> 1) & 1);
         putGpioValue(pad->gpio_maps[2], (addr >> 2) & 1);
         putGpioValue(pad->gpio_maps[3], (addr >> 3) & 1);
-        int read = GPIO_READ(pad->gpio_maps[4]);
+        read = GPIO_READ(pad->gpio_maps[4]);
         data[i] = (read == 0)? 1 : 0;
     }
 }
@@ -563,7 +564,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
                  setGpioAsInput(pad->gpio_maps[i]);
             }                
         }
-        setGpioPullUps(getPullUpMask(pad->gpio_maps), 12);
+        setGpioPullUps(getPullUpMask(pad->gpio_maps, 12));
         printk("GPIO configured for pad%d\n", idx);
 	}
 
