@@ -349,6 +349,7 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
         putGpioValue(addr1, (addr >> 1) & 1);
         putGpioValue(addr2, (addr >> 2) & 1);
         putGpioValue(addr3, (addr >> 3) & 1);
+        udelay(10);
         value = GPIO_READ(readp);
         data[i] = (value == 0)? 1 : 0;
     }
