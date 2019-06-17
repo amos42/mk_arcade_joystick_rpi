@@ -58,8 +58,8 @@ MODULE_LICENSE("GPL");
 
 #define SET_GPIO_ALT(g,a) *(gpio+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
 
-#define GPIO_SET (*(gpio+7))
-#define GPIO_CLR (*(gpio+10))
+#define GPIO_SET *(gpio+7)
+#define GPIO_CLR *(gpio+10)
 
 #define BSC1_BASE		(PERI_BASE + 0x804000)
 
@@ -235,9 +235,9 @@ static int getPullUpMask(int gpioMap[]){
 
 static void putGpioValue(int gpio, int onoff) {
     if (onoff) 
-        GPIO_SET = (1 << gpio); 
+        GPIO_SET = (unsigned char)(1 << gpio); 
     else 
-        GPIO_CLR = (1 << gpio);
+        GPIO_CLR = (unsigned char)(1 << gpio);
 }
 
 /* I2C UTILS */
