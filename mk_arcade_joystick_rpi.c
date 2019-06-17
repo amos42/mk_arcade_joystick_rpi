@@ -39,7 +39,7 @@
 
 
 MODULE_AUTHOR("Matthieu Proucelle");
-MODULE_DESCRIPTION("GPIO and MCP23017 Arcade Joystick Driver");
+MODULE_DESCRIPTION("GPIO and MCP23017 and Multiplexer Arcade Joystick Driver");
 MODULE_LICENSE("GPL");
 
 #define MK_MAX_DEVICES		9
