@@ -132,6 +132,16 @@ static struct gpio_config gpio_cfg __initdata;
 module_param_array_named(gpio, gpio_cfg.mk_arcade_gpio_maps_custom, int, &(gpio_cfg.nargs), 0);
 MODULE_PARM_DESC(gpio, "Numbers of custom GPIO for Arcade Joystick");
 
+struct ext_config {
+    int args[8];
+    unsigned int nargs;
+};
+
+static struct ext_config ext_cfg __initdata;
+
+module_param_array_named(ext, ext_cfg.args, int, &(ext_cfg.nargs), 0);
+MODULE_PARM_DESC(ext, "Extend config for Arcade Joystick");
+
 enum mk_type {
     MK_NONE = 0,
     MK_ARCADE_GPIO,
@@ -343,9 +353,18 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
     int addr2 = pad->gpio_maps[2];
     int addr3 = pad->gpio_maps[3];
     int readp = pad->gpio_maps[4];
+    int startoffs = 0;
+    int loopcount = mk_max_arcade_buttons;
 
-    for (i = 0; i < mk_max_arcade_buttons; i++) {
-        int addr = i + 3;
+    if(ext_cfg.nargs > 0) {
+        startoffs = ext_cfg.args[0];
+        if(ext_cfg.nargs >= 2) {
+            loopcount = ext_cfg.args[1];
+        }
+    }
+
+    for (i = 0; i < loopcount; i++) {
+        int addr = i + startoffs;
         putGpioValue(addr0, addr & 1);
         putGpioValue(addr1, (addr >> 1) & 1);
         putGpioValue(addr2, (addr >> 2) & 1);
@@ -353,6 +372,9 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
         udelay(5);
         value = GET_GPIO(readp);
         data[i] = (value == 0)? 1 : 0;
+    }
+    for (i = loopcount; i < mk_max_arcade_buttons; i++) {
+        data[i] = 0;
     }
 }
 
