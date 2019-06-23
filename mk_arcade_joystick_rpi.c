@@ -117,8 +117,7 @@ struct mk_config {
     unsigned int nargs;
 };
 
-//static struct mk_config mk_cfg __initdata;
-static struct mk_config mk_cfg;
+static struct mk_config mk_cfg __initdata;
 
 module_param_array_named(map, mk_cfg.args, int, &(mk_cfg.nargs), 0);
 MODULE_PARM_DESC(map, "Enable or disable GPIO, MCP23017, TFT and Custom Arcade Joystick");
@@ -128,8 +127,7 @@ struct gpio_config {
     unsigned int nargs;
 };
 
-//static struct gpio_config gpio_cfg __initdata;
-static struct gpio_config gpio_cfg;
+static struct gpio_config gpio_cfg __initdata;
 
 module_param_array_named(gpio, gpio_cfg.mk_arcade_gpio_maps_custom, int, &(gpio_cfg.nargs), 0);
 MODULE_PARM_DESC(gpio, "Numbers of custom GPIO for Arcade Joystick");
@@ -139,8 +137,7 @@ struct ext_config {
     unsigned int nargs;
 };
 
-//static struct ext_config ext_cfg __initdata;
-static struct ext_config ext_cfg;
+static struct ext_config ext_cfg __initdata;
 
 module_param_array_named(ext, ext_cfg.args, int, &(ext_cfg.nargs), 0);
 MODULE_PARM_DESC(ext, "Extend config for Arcade Joystick");
@@ -164,6 +161,8 @@ struct mk_pad {
     char phys[32];
     int mcp23017addr;
     int gpio_maps[12]
+    int start_offs;
+    int button_count;
 };
 
 struct mk_nin_gpio {
@@ -356,15 +355,8 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
     int addr2 = pad->gpio_maps[2];
     int addr3 = pad->gpio_maps[3];
     int readp = pad->gpio_maps[4];
-    int startoffs = 0;
-    int loopcount = mk_max_arcade_buttons;
-
-    if(ext_cfg.nargs >= 1) {
-        startoffs = ext_cfg.args[0];
-        if(ext_cfg.nargs >= 2) {
-            loopcount = ext_cfg.args[1];
-        }
-    }
+    int startoffs = pad->start_offs;
+    int loopcount = pad->button_count;
 
     for (i = 0; i < loopcount; i++) {
         int addr = i + startoffs;
@@ -554,6 +546,14 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             break;
         case MK_ARCADE_GPIO_MULTIPLEXER:
             memcpy(pad->gpio_maps, gpio_cfg.mk_arcade_gpio_maps_custom, 5 *sizeof(int));
+            pad->start_offs = 0;
+            pad->button_count = mk_max_arcade_buttons;
+            if (ext_cfg.nargs >= 1){
+                pad->start_offs = ext_cfg.args[0];
+                if (ext_cfg.nargs >= 2){
+                    pad->button_count = ext_cfg.args[1];
+                }
+            }
             break;
     }
 
