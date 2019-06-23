@@ -160,7 +160,7 @@ struct mk_pad {
     enum mk_type type;
     char phys[32];
     int mcp23017addr;
-    int gpio_maps[12]
+    int gpio_maps[12];
     int start_offs;
     int button_count;
 };
@@ -548,9 +548,9 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             memcpy(pad->gpio_maps, gpio_cfg.mk_arcade_gpio_maps_custom, 5 *sizeof(int));
             pad->start_offs = 0;
             pad->button_count = mk_max_arcade_buttons;
-            if (ext_cfg.nargs >= 1){
+            if (ext_cfg.nargs >= 1) {
                 pad->start_offs = ext_cfg.args[0];
-                if (ext_cfg.nargs >= 2){
+                if (ext_cfg.nargs >= 2) {
                     pad->button_count = ext_cfg.args[1];
                 }
             }
