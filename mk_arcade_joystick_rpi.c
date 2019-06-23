@@ -345,7 +345,7 @@ static void mk_multiplexer_read_packet(struct mk_pad * pad, unsigned char *data)
     int readp = pad->gpio_maps[4];
 
     for (i = 0; i < mk_max_arcade_buttons; i++) {
-        int addr = i + 1;
+        int addr = i;
         putGpioValue(addr0, addr & 1);
         putGpioValue(addr1, (addr >> 1) & 1);
         putGpioValue(addr2, (addr >> 2) & 1);
