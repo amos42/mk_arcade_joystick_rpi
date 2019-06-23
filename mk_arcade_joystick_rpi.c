@@ -117,7 +117,8 @@ struct mk_config {
     unsigned int nargs;
 };
 
-static struct mk_config mk_cfg __initdata;
+//static struct mk_config mk_cfg __initdata;
+static struct mk_config mk_cfg;
 
 module_param_array_named(map, mk_cfg.args, int, &(mk_cfg.nargs), 0);
 MODULE_PARM_DESC(map, "Enable or disable GPIO, MCP23017, TFT and Custom Arcade Joystick");
@@ -127,7 +128,8 @@ struct gpio_config {
     unsigned int nargs;
 };
 
-static struct gpio_config gpio_cfg __initdata;
+//static struct gpio_config gpio_cfg __initdata;
+static struct gpio_config gpio_cfg;
 
 module_param_array_named(gpio, gpio_cfg.mk_arcade_gpio_maps_custom, int, &(gpio_cfg.nargs), 0);
 MODULE_PARM_DESC(gpio, "Numbers of custom GPIO for Arcade Joystick");
@@ -137,7 +139,8 @@ struct ext_config {
     unsigned int nargs;
 };
 
-static struct ext_config ext_cfg __initdata;
+//static struct ext_config ext_cfg __initdata;
+static struct ext_config ext_cfg;
 
 module_param_array_named(ext, ext_cfg.args, int, &(ext_cfg.nargs), 0);
 MODULE_PARM_DESC(ext, "Extend config for Arcade Joystick");
