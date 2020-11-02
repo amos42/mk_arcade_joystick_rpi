@@ -36,11 +36,16 @@
 
 #include <linux/ioport.h>
 #include <asm/io.h>
-
+#include <linux/version.h>
 
 MODULE_AUTHOR("Matthieu Proucelle");
 MODULE_DESCRIPTION("GPIO and MCP23017 and Multiplexer and 74HC165 Arcade Joystick Driver");
 MODULE_LICENSE("GPL");
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,15,0)
+#define HAVE_TIMER_SETUP
+#endif
+
 
 #define MK_MAX_DEVICES		9
 
@@ -445,7 +450,13 @@ static void mk_process_packet(struct mk *mk) {
  * mk_timer() initiates reads of console pads data.
  */
 
+#ifdef HAVE_TIMER_SETUP
+static void mk_timer(struct timer_list *t) {
+    struct mk *mk = from_timer(mk, t, timer);
+#else
 static void mk_timer(unsigned long private) {
+    struct mk *mk = (void *) private;
+#endif
     struct mk *mk = (void *) private;
     mk_process_packet(mk);
     mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
@@ -682,7 +693,11 @@ static struct mk __init *mk_probe(int *pads, int n_pads) {
     }
 
     mutex_init(&mk->mutex);
+#ifdef HAVE_TIMER_SETUP
+    timer_setup(&mk->timer, mk_timer, 0);
+#else
     setup_timer(&mk->timer, mk_timer, (long) mk);
+#endif
 
     for (i = 0; i < n_pads && i < MK_MAX_DEVICES; i++) {
         if (!pads[i])
