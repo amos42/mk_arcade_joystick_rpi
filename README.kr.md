@@ -299,23 +299,31 @@ sudo dpkg -i build/mk-arcade-joystick-rpi-0.1.6.deb
 
 ## 올리는 법
 
+설정 파일을 추가합니다.
 ```
 sudo nano /etc/modprobe.d/mk_arcade_joystick.conf
 ```
 
 > options mk_arcade_joystick_rpi map=6 gpio=addrpin0,addrpin1,addrpin2,addrpin3,datapin ext=1
 
+드라이버를 등록합니다.
+
 ```
 sudo nano /etc/modules
 ```
 
 다음을 추가합니다.
+
 > mk_arcade_joystick_rpi
 
 만약 정상동작 하지 않는다면 다음의 위치들을 차례로 시도해 봅니다.
+
 > /etc/modules
+
 > /etc/modules-load.d/*.conf
+
 > /run/modules-load.d/*.conf
+
 > /usr/lib/modules-load.d/*.conf
 
 
