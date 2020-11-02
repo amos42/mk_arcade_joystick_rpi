@@ -457,7 +457,6 @@ static void mk_timer(struct timer_list *t) {
 static void mk_timer(unsigned long private) {
     struct mk *mk = (void *) private;
 #endif
-    struct mk *mk = (void *) private;
     mk_process_packet(mk);
     mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
 }
