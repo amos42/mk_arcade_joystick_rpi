@@ -291,7 +291,7 @@ sudo modprobe mk_arcade_joystick_rpi map=1,0x20,0x24
 ## 빌드 방법
 
 ```
-git clone https://github.com/amos42/mk_arcade_joystick_rpi
+git clone https://github.com/amos42/mk_arcade_joystick_rpi -b hotkeybtn
 cd mk_arcade_joystick_rpi
 utils/makepackage.sh 0.1.6
 sudo dpkg -i build/mk-arcade-joystick-rpi-0.1.6.deb
