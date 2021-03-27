@@ -49,13 +49,14 @@ MODULE_LICENSE("GPL");
 
 #define MK_MAX_DEVICES		9
 
-#ifdef RPI2
-#define PERI_BASE        0x3F000000
-#else
-#define PERI_BASE        0x20000000
-#endif
+// #ifdef RPI2
+// #define PERI_BASE        0x3F000000
+// #else
+// #define PERI_BASE        0x20000000
+// #endif
+#define PERI_BASE           mk_bcm2708_peri_base
 
-#define GPIO_BASE                (PERI_BASE + 0x200000) /* GPIO controller */
+#define GPIO_BASE           (PERI_BASE + 0x200000) /* GPIO controller */
 
 #define INP_GPIO(g) *(gpio+((g)/10)) &= ~(7<<(((g)%10)*3))
 #define OUT_GPIO(g) *(gpio+((g)/10)) |=  (1<<(((g)%10)*3))
